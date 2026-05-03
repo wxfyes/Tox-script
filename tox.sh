@@ -241,9 +241,9 @@ restart() {
 
 status() {
     if [[ x"${release}" == x"alpine" ]]; then
-        service V2bX status
+        service tox status
     else
-        systemctl status V2bX --no-pager -l
+        systemctl status tox --no-pager -l
     fi
     if [[ $# == 0 ]]; then
         before_show_menu
@@ -533,8 +533,8 @@ generate_config_file() {
     echo -e "${yellow}tox 配置文件生成向导${plain}"
     echo -e "${red}请阅读以下注意事项：${plain}"
     echo -e "${red}1. 目前该功能正处测试阶段${plain}"
-    echo -e "${red}2. 生成的配置文件会保存到 /etc/V2bX/config.json${plain}"
-    echo -e "${red}3. 原来的配置文件会保存到 /etc/V2bX/config.json.bak${plain}"
+    echo -e "${red}2. 生成的配置文件会保存到 /etc/tox/config.json${plain}"
+    echo -e "${red}3. 原来的配置文件会保存到 /etc/tox/config.json.bak${plain}"
     echo -e "${red}4. 目前仅部分支持TLS${plain}"
     echo -e "${red}5. 使用此功能生成的配置文件会自带审计，确定继续？(y/n)${plain}"
     read -rp "请输入：" continue_prompt
@@ -591,7 +591,7 @@ generate_config_file() {
             \"Server\": \"time.apple.com\",
             \"ServerPort\": 0
         },
-        \"OriginalPath\": \"/etc/V2bX/sing_origin.json\"
+        \"OriginalPath\": \"/etc/tox/sing_origin.json\"
     },"
     fi
 
@@ -603,15 +603,16 @@ generate_config_file() {
     cores_config+="]"
 
     # 切换到配置文件目录
-    cd /etc/V2bX
+    mkdir -p /etc/tox
+    cd /etc/tox
     
     # 备份旧的配置文件
-    mv config.json config.json.bak
+    mv -f config.json config.json.bak 2>/dev/null
     nodes_config_str="${nodes_config[*]}"
     formatted_nodes_config="${nodes_config_str%,}"
 
     # 创建 config.json 文件
-    cat <<EOF > /etc/V2bX/config.json
+    cat <<EOF > /etc/tox/config.json
 {
     "Log": {
         "Level": "error",
@@ -623,7 +624,7 @@ generate_config_file() {
 EOF
     
     # 创建 custom_outbound.json 文件
-    cat <<EOF > /etc/V2bX/custom_outbound.json
+    cat <<EOF > /etc/tox/custom_outbound.json
     [
         {
             "tag": "IPv4_out",
@@ -647,7 +648,7 @@ EOF
 EOF
     
     # 创建 route.json 文件
-    cat <<EOF > /etc/V2bX/route.json
+    cat <<EOF > /etc/tox/route.json
     {
         "domainStrategy": "AsIs",
         "rules": [
@@ -714,7 +715,7 @@ EOF
         dnsstrategy="prefer_ipv4"
     fi
     # 创建 sing_origin.json 文件
-    cat <<EOF > /etc/V2bX/sing_origin.json
+    cat <<EOF > /etc/tox/sing_origin.json
 {
   "dns": {
     "servers": [
@@ -793,7 +794,7 @@ EOF
 EOF
 
     # 创建 hy2config.yaml 文件           
-    cat <<EOF > /etc/V2bX/hy2config.yaml
+    cat <<EOF > /etc/tox/hy2config.yaml
 quic:
   initStreamReceiveWindow: 8388608
   maxStreamReceiveWindow: 8388608
@@ -892,12 +893,21 @@ install_reset_nginx() {
     if [[ x"${release}" == x"centos" ]]; then
         yum install nginx -y
     elif [[ x"${release}" == x"ubuntu" || x"${release}" == x"debian" ]]; then
+        apt-get update
         apt-get install nginx -y
     elif [[ x"${release}" == x"alpine" ]]; then
+        apk update
         apk add nginx
     fi
     
+    if [[ $? != 0 ]]; then
+        echo -e "${red}Nginx 安装失败，请检查网络或软件源设置${plain}"
+        before_show_menu
+        return 1
+    fi
+
     mkdir -p /usr/share/nginx/html
+    mkdir -p /etc/nginx
     echo -e "${yellow}请选择伪装站点主题/游戏：${plain}"
     echo -e "  1. 贪吃蛇游戏 (Snake Game)"
     echo -e "  2. 2048 游戏 (2048 Game, 简版)"

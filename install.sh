@@ -265,13 +265,20 @@ EOF
         if [[ x"${release}" == x"centos" ]]; then
             yum install nginx -y
         elif [[ x"${release}" == x"ubuntu" || x"${release}" == x"debian" ]]; then
+            apt-get update
             apt-get install nginx -y
         elif [[ x"${release}" == x"alpine" ]]; then
+            apk update
             apk add nginx
         fi
         
-        # Configure Nginx for local fallback 8080
-        mkdir -p /usr/share/nginx/html
+        if [[ $? != 0 ]]; then
+            echo -e "${red}Nginx 安装失败，请检查网络或软件源设置${plain}"
+            echo -e "${yellow}跳过伪装站点部署${plain}"
+        else
+            # Configure Nginx for local fallback 8080
+            mkdir -p /usr/share/nginx/html
+            mkdir -p /etc/nginx
         echo -e "${yellow}请选择伪装站点主题/游戏：${plain}"
         echo -e "  1. 贪吃蛇游戏 (Snake Game)"
         echo -e "  2. 2048 游戏 (2048 Game, 简版)"
@@ -395,6 +402,7 @@ EOF
         systemctl restart nginx
         systemctl enable nginx
         echo -e "${green}伪装站点部署完成 (监听 127.0.0.1:8080)${plain}"
+        fi
     else
         echo -e "${yellow}跳过 Nginx 安装${plain}"
     fi
