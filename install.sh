@@ -253,9 +253,9 @@ EOF
     # 替换脚本下载地址
     curl -o /usr/bin/tox -Ls https://raw.githubusercontent.com/wxfyes/Tox-script/master/tox.sh
     chmod +x /usr/bin/tox
-    if [ ! -L /usr/bin/tox ]; then
-        ln -s /usr/bin/tox /usr/bin/tox
-        chmod +x /usr/bin/tox
+    if [ ! -L /usr/bin/v2bx ]; then
+        ln -s /usr/bin/tox /usr/bin/v2bx
+        chmod +x /usr/bin/v2bx
     fi
 
     # Install Masquerade Site (Nginx)
