@@ -448,7 +448,7 @@ add_node_config() {
         fi
     done
 
-    if [ "$core_sing" == true ]; then
+    if [ "$core_sing" == true ] || [ "$core" == "xray" ]; then
         echo -e "${yellow}请选择节点传输协议：${plain}"
         echo -e "${green}1. Shadowsocks${plain}"
         echo -e "${green}2. Vless${plain}"
@@ -458,6 +458,7 @@ add_node_config() {
         echo -e "${green}6. Trojan${plain}"  
         echo -e "${green}7. Tuic${plain}"
         echo -e "${green}8. AnyTLS${plain}"
+        echo -e "${green}9. xhttp${plain}"
         read -rp "请输入：" NodeType
         case "$NodeType" in
             1 ) NodeType="shadowsocks" ;;
@@ -468,6 +469,7 @@ add_node_config() {
             6 ) NodeType="trojan" ;;
             7 ) NodeType="tuic" ;;
             8 ) NodeType="anytls" ;;
+            9 ) NodeType="xhttp" ;;
             * ) NodeType="shadowsocks" ;;
         esac
     fi
