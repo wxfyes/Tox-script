@@ -1037,29 +1037,39 @@ EOF
             ;;
     esac
     
+    # 清理可能冲突的默认配置
+    rm -rf /etc/nginx/conf.d/*
+    rm -rf /etc/nginx/sites-enabled/*
+    
     cat > /etc/nginx/nginx.conf <<EOF
 user root;
 worker_processes auto;
 error_log /var/log/nginx/error.log;
-pid /run/nginx.pid;
+pid /var/run/nginx.pid;
 
 events {
     worker_connections 1024;
 }
 
 http {
-    include       /etc/nginx/mime.types;
+    include       mime.types;
     default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
     
     server {
-        listen 127.0.0.1:8080;
+        listen 8080 default_server;
         server_name _;
         root /usr/share/nginx/html;
         index index.html;
+        location / {
+            try_files \$uri \$uri/ =404;
+        }
     }
 }
 EOF
-    systemctl restart nginx
+    systemctl stop nginx 2>/dev/null
+    systemctl start nginx
     systemctl enable nginx
     echo -e "${green}Nginx 安装/重置完成，监听端口: 8080${plain}"
     
