@@ -954,9 +954,36 @@ install_reset_nginx() {
 
     # Fix for missing mime.types or other core config files
     if [[ ! -f /etc/nginx/mime.types ]]; then
-        echo -e "${yellow}检测到 Nginx 核心配置文件缺失，正在尝试修复...${plain}"
+        echo -e "${yellow}检测到 Nginx 核心配置文件缺失，正在尝试强制修复...${plain}"
         if [[ x"${release}" == x"ubuntu" || x"${release}" == x"debian" ]]; then
             apt-get install --reinstall nginx-common -y
+        fi
+        # Stronger fix: if still missing, create a basic one to let nginx start
+        if [[ ! -f /etc/nginx/mime.types ]]; then
+             cat > /etc/nginx/mime.types <<EOF
+types {
+    text/html                             html htm shtml;
+    text/css                              css;
+    text/xml                              xml;
+    image/gif                             gif;
+    image/jpeg                            jpeg jpg;
+    application/javascript                js;
+    application/atom+xml                  atom;
+    application/rss+xml                   rss;
+    font/woff                             woff;
+    font/woff2                            woff2;
+    image/png                             png;
+    image/svg+xml                         svg svgz;
+    image/webp                            webp;
+    application/json                      json;
+    application/zip                       zip;
+    application/octet-stream              bin exe dll;
+    application/octet-stream              deb;
+    application/octet-stream              dmg;
+    application/octet-stream              iso img;
+    application/octet-stream              msi msp msm;
+}
+EOF
         fi
     fi
 
