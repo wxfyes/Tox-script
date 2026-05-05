@@ -429,12 +429,12 @@ add_node_config() {
     case "$core_type" in
         2 ) 
             core="xray"
-            core_sing=false
+            has_xray=true
             echo -e "${green}核心类型已设置为: xray${plain}"
             ;;
         * ) 
             core="sing"
-            core_sing=true
+            has_sing=true
             echo -e "${green}核心类型已设置为: singbox${plain}"
             ;;
     esac
@@ -448,7 +448,7 @@ add_node_config() {
         fi
     done
 
-    if [ "$core_sing" == true ] || [ "$core" == "xray" ]; then
+    if [ "$core" == "sing" ] || [ "$core" == "xray" ]; then
         echo -e "${yellow}请选择节点传输协议：${plain}"
         echo -e "${green}1. Shadowsocks${plain}"
         echo -e "${green}2. Vless${plain}"
@@ -470,6 +470,11 @@ add_node_config() {
             8 ) NodeType="anytls" ;;
             * ) NodeType="shadowsocks" ;;
         esac
+    fi
+    # 强制 AnyTLS 使用 Sing-box
+    if [ "$NodeType" == "anytls" ]; then
+        core="sing"
+        has_sing=true
     fi
     fastopen=true
     if [ "$NodeType" == "vless" ]; then
@@ -568,8 +573,8 @@ generate_config_file() {
     
     nodes_config=()
     first_node=true
-    core_xray=false
-    core_sing=false
+    has_xray=false
+    has_sing=false
     fixed_api_info=false
     check_api=false
     
@@ -597,7 +602,7 @@ generate_config_file() {
     done
 
     # 检查并添加xray核心配置
-    if [ "$core" == "xray" ]; then
+    if [ "$has_xray" = true ]; then
         cores_config+="
     {
         \"Type\": \"xray\",
@@ -609,7 +614,7 @@ generate_config_file() {
     fi
 
     # 检查并添加sing核心配置
-    if [ "$core_sing" = true ]; then
+    if [ "$has_sing" = true ]; then
         cores_config+="
     {
         \"Type\": \"sing\",

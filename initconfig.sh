@@ -37,7 +37,7 @@ add_node_config() {
         fi
     done
 
-    if [ "$core_sing" == true ] || [ "$core" == "xray" ]; then
+    if [ "$core" == "sing" ] || [ "$core" == "xray" ]; then
         echo -e "${yellow}请选择节点传输协议：${plain}"
         echo -e "${green}1. Shadowsocks${plain}"
         echo -e "${green}2. Vless${plain}"
