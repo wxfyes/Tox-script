@@ -104,7 +104,7 @@ add_node_config() {
                 "CertDomain": "$certdomain",
                 "CertFile": "/etc/tox/fullchain.cer",
                 "KeyFile": "/etc/tox/cert.key",
-                "Email": "v2bx@github.com",
+                "Email": "tox@github.com",
                 "Provider": "cloudflare",
                 "DNSEnv": {
                     "EnvName": "env1"
@@ -119,7 +119,7 @@ EOF
 }
 
 generate_config_file() {
-    echo -e "${yellow}V2bX 配置文件生成向导${plain}"
+    echo -e "${yellow}Tox 配置文件生成向导${plain}"
     echo -e "${red}请阅读以下注意事项：${plain}"
     echo -e "${red}1. 目前该功能正处测试阶段${plain}"
     echo -e "${red}2. 生成的配置文件会保存到 /etc/tox/config.json${plain}"
@@ -406,6 +406,6 @@ acl:
 masquerade:
   type: 404
 EOF
-    echo -e "${green}V2bX 配置文件生成完成,正在重新启动服务${plain}"
+    echo -e "${green}Tox 配置文件生成完成,正在重新启动服务${plain}"
     tox restart
 }

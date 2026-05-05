@@ -132,33 +132,33 @@ install_V2bX() {
     cd /usr/local/tox/
 
     if  [ $# == 0 ] ;then
-        last_version=$(curl -Ls "https://api.github.com/repos/wangn9900/V2bX/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        last_version=$(curl -Ls "https://api.github.com/repos/wxfyes/Tox/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
         if [[ ! -n "$last_version" ]]; then
             echo -e "${red}检测 tox 版本失败，可能是超出 Github API 限制，请稍后再试，或手动指定 tox 版本安装${plain}"
             exit 1
         fi
         echo -e "检测到 tox 最新版本：${last_version}，开始安装"
-        wget --no-check-certificate -N --progress=bar -O /usr/local/tox/V2bX-linux.zip https://github.com/wangn9900/V2bX/releases/download/${last_version}/V2bX-linux-${arch}.zip
+        wget --no-check-certificate -N --progress=bar -O /usr/local/tox/Tox-linux.zip https://github.com/wxfyes/Tox/releases/download/${last_version}/Tox-linux-${arch}.zip
         if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 V2bX 失败，请确保你的服务器能够下载 Github 的文件${plain}"
+            echo -e "${red}下载 Tox 失败，请确保你的服务器能够下载 Github 的文件${plain}"
             exit 1
         fi
     else
         last_version=$1
-        url="https://github.com/wangn9900/V2bX/releases/download/${last_version}/V2bX-linux-${arch}.zip"
+        url="https://github.com/wxfyes/Tox/releases/download/${last_version}/Tox-linux-${arch}.zip"
         echo -e "开始安装 tox $1"
-        wget --no-check-certificate -N --progress=bar -O /usr/local/tox/V2bX-linux.zip ${url}
+        wget --no-check-certificate -N --progress=bar -O /usr/local/tox/Tox-linux.zip ${url}
         if [[ $? -ne 0 ]]; then
             echo -e "${red}下载 tox $1 失败，请确保此版本存在${plain}"
             exit 1
         fi
     fi
 
-    unzip V2bX-linux.zip
-    rm V2bX-linux.zip -f
+    unzip Tox-linux.zip
+    rm Tox-linux.zip -f
     # Rename binary to tox
-    if [[ -f V2bX ]]; then
-        mv V2bX tox
+    if [[ -f Tox ]]; then
+        mv Tox tox
     fi
     chmod +x tox
     mkdir /etc/tox/ -p
@@ -251,11 +251,11 @@ EOF
         cp custom_inbound.json /etc/tox/
     fi
     # 替换脚本下载地址
-    curl -o /usr/bin/tox -Ls https://raw.githubusercontent.com/wangn9900/V2bX-script/master/tox.sh
+    curl -o /usr/bin/tox -Ls https://raw.githubusercontent.com/wxfyes/Tox-script/master/tox.sh
     chmod +x /usr/bin/tox
-    if [ ! -L /usr/bin/v2bx ]; then
-        ln -s /usr/bin/tox /usr/bin/v2bx
-        chmod +x /usr/bin/v2bx
+    if [ ! -L /usr/bin/tox ]; then
+        ln -s /usr/bin/tox /usr/bin/tox
+        chmod +x /usr/bin/tox
     fi
 
     # Install Masquerade Site (Nginx)
@@ -433,7 +433,7 @@ EOF
         read -rp "检测到你为第一次安装tox,是否自动直接生成配置文件？(y/n): " if_generate
         if [[ $if_generate == [Yy] ]]; then
             # 替换初始化脚本地址
-            curl -o ./initconfig.sh -Ls https://raw.githubusercontent.com/wangn9900/V2bX-script/master/initconfig.sh
+            curl -o ./initconfig.sh -Ls https://raw.githubusercontent.com/wxfyes/Tox-script/master/initconfig.sh
             source initconfig.sh
             rm initconfig.sh -f
             generate_config_file

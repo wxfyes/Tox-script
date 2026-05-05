@@ -96,7 +96,7 @@ before_show_menu() {
 }
 
 install() {
-    bash <(curl -Ls https://raw.githubusercontent.com/wangn9900/V2bX-script/master/install.sh)
+    bash <(curl -Ls https://raw.githubusercontent.com/wxfyes/Tox-script/master/install.sh)
     if [[ $? == 0 ]]; then
         if [[ $# == 0 ]]; then
             start
@@ -720,8 +720,16 @@ EOF
   "dns": {
     "servers": [
       {
+        "tag": "google",
+        "address": "https://8.8.8.8/dns-query"
+      },
+      {
         "tag": "cf",
-        "address": "1.1.1.1"
+        "address": "https://1.1.1.1/dns-query"
+      },
+      {
+        "tag": "google-udp",
+        "address": "8.8.8.8"
       }
     ],
     "strategy": "$dnsstrategy"
@@ -731,7 +739,7 @@ EOF
       "tag": "direct",
       "type": "direct",
       "domain_resolver": {
-        "server": "cf",
+        "server": "google",
         "strategy": "$dnsstrategy"
       }
     },
