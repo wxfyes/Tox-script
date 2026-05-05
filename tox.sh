@@ -526,7 +526,7 @@ add_node_config() {
                 "EnableFallback": true,
                 "FallBackConfigs": [
                     {
-                        "SNI": "$certdomain",
+                        "SNI": "",
                         "Dest": "8080",
                         "ProxyProtocolVer": 0
                     }
