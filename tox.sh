@@ -422,7 +422,7 @@ show_V2bX_version() {
 }
 
 add_node_config() {
-    echo -e "${yellow}请选择核心类型：${plain}"
+    echo -e "${yellow}请选择核心类型 (Tox 双核版)：${plain}"
     echo -e "${green}1. sing-box${plain}"
     echo -e "${green}2. xray${plain}"
     read -rp "请输入 (默认1): " core_type
