@@ -234,7 +234,9 @@ generate_config_file() {
         "Output": ""
     },
     "Cores": $cores_config,
-    "Nodes": [$formatted_nodes_config]
+    "Nodes": [$formatted_nodes_config],
+    "DNS": "/etc/tox/dns.json",
+    "Routing": "/etc/tox/route.json"
 }
 EOF
     
