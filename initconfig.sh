@@ -134,7 +134,7 @@ add_node_config() {
                     "EnvName": "env1"
                 }
             }
-        },
+        }
 EOF
 )
     fi
@@ -232,8 +232,8 @@ generate_config_file() {
     
     # 备份旧的配置文件
     mv config.json config.json.bak
-    nodes_config_str="${nodes_config[*]}"
-    formatted_nodes_config="${nodes_config_str%,}"
+    nodes_config_str=$(printf ",%s" "${nodes_config[@]}")
+    formatted_nodes_config="${nodes_config_str:1}"
 
     # 创建 config.json 文件
     cat <<EOF > /etc/tox/config.json
