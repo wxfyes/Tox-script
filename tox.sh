@@ -587,10 +587,17 @@ generate_config_file() {
         fi
     done
 
-    # 初始化核心配置数组
-    cores_config="["
-
-
+    # 检查并添加xray核心配置
+    if [ "$core" == "xray" ]; then
+        cores_config+="
+    {
+        \"Type\": \"xray\",
+        \"Log\": {
+            \"Level\": \"error\",
+            \"Timestamp\": true
+        }
+    },"
+    fi
 
     # 检查并添加sing核心配置
     if [ "$core_sing" = true ]; then
