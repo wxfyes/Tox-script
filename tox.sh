@@ -522,11 +522,21 @@ add_node_config() {
             "MinReportTraffic": 0,
             "TCPFastOpen": $fastopen,
             "SniffEnabled": true,
+            "XrayOptions": {
+                "EnableFallback": true,
+                "FallBackConfigs": [
+                    {
+                        "SNI": "$certdomain",
+                        "Dest": "8080",
+                        "ProxyProtocolVer": 0
+                    }
+                ],
+                "DisableSniffing": false
+            },
             "CertConfig": {
                 "CertMode": "$certmode",
                 "RejectUnknownSni": false,
                 "CertDomain": "$certdomain",
-                "Dest": "127.0.0.1:8080",
                 "CertFile": "/etc/tox/fullchain.cer",
                 "KeyFile": "/etc/tox/cert.key",
                 "Email": "v2bx@github.com",
