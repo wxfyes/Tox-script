@@ -952,6 +952,14 @@ install_reset_nginx() {
         return 1
     fi
 
+    # Fix for missing mime.types or other core config files
+    if [[ ! -f /etc/nginx/mime.types ]]; then
+        echo -e "${yellow}检测到 Nginx 核心配置文件缺失，正在尝试修复...${plain}"
+        if [[ x"${release}" == x"ubuntu" || x"${release}" == x"debian" ]]; then
+            apt-get install --reinstall nginx-common -y
+        fi
+    fi
+
     mkdir -p /usr/share/nginx/html
     mkdir -p /etc/nginx
     echo -e "${yellow}请选择伪装站点主题/游戏：${plain}"
