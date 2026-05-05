@@ -1037,22 +1037,23 @@ EOF
             ;;
     esac
     
-    # 清理可能冲突的默认配置
+    # 强力清理 Nginx 环境
+    systemctl stop nginx 2>/dev/null
+    pkill -9 nginx 2>/dev/null
     rm -rf /etc/nginx/conf.d/*
     rm -rf /etc/nginx/sites-enabled/*
+    mkdir -p /var/log/nginx
     
     cat > /etc/nginx/nginx.conf <<EOF
-user root;
 worker_processes auto;
 error_log /var/log/nginx/error.log;
-pid /var/run/nginx.pid;
 
 events {
     worker_connections 1024;
 }
 
 http {
-    include       mime.types;
+    include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
     sendfile        on;
     keepalive_timeout  65;
@@ -1068,9 +1069,15 @@ http {
     }
 }
 EOF
-    systemctl stop nginx 2>/dev/null
-    systemctl start nginx
-    systemctl enable nginx
+    
+    echo -e "${yellow}正在检查 Nginx 配置...${plain}"
+    if nginx -t; then
+        systemctl start nginx
+        systemctl enable nginx
+        echo -e "${green}Nginx 安装/重置完成，监听端口: 8080${plain}"
+    else
+        echo -e "${red}Nginx 配置错误，请根据上方提示排查！${plain}"
+    fi
     echo -e "${green}Nginx 安装/重置完成，监听端口: 8080${plain}"
     
     if [[ $# == 0 ]]; then
