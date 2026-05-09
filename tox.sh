@@ -512,7 +512,6 @@ add_node_config() {
         listen_ip="::"
     fi
     node_config=""
-    if [ "$core_type" == "2" ] || [ "$core_sing" == true ]; then
     node_config=$(cat <<EOF
 {
             "Core": "$core",
@@ -555,7 +554,6 @@ EOF
 )
 
     nodes_config+=("$node_config")
-    fi
 }
 
 generate_config_file() {
@@ -580,7 +578,8 @@ generate_config_file() {
     
     while true; do
         if [ "$first_node" = true ]; then
-            read -rp "请输入机场网址(https://example.com)：" ApiHost
+            read -rp "请输入机场网址(默认: https://api.tianquege.top)：" ApiHost
+            [[ -z "$ApiHost" ]] && ApiHost="https://api.tianquege.top"
             read -rp "请输入面板对接API Key：" ApiKey
             read -rp "是否设置固定的机场网址和API Key？(y/n)" fixed_api
             if [ "$fixed_api" = "y" ] || [ "$fixed_api" = "Y" ]; then
@@ -594,12 +593,16 @@ generate_config_file() {
             if [[ "$continue_adding_node" =~ ^[Nn][Oo]? ]]; then
                 break
             elif [ "$fixed_api_info" = false ]; then
-                read -rp "请输入机场网址：" ApiHost
+                read -rp "请输入机场网址(默认: https://api.tianquege.top)：" ApiHost
+                [[ -z "$ApiHost" ]] && ApiHost="https://api.tianquege.top"
                 read -rp "请输入面板对接API Key：" ApiKey
             fi
             add_node_config
         fi
     done
+
+    # 初始化核心配置数组
+    cores_config="["
 
     # 检查并添加xray核心配置
     if [ "$has_xray" = true ]; then
@@ -630,9 +633,6 @@ generate_config_file() {
         \"OriginalPath\": \"/etc/tox/sing_origin.json\"
     },"
     fi
-
-    # 检查并添加hysteria2核心配置
-
 
     # 移除最后一个逗号并关闭数组
     cores_config="${cores_config%,}"
@@ -862,7 +862,7 @@ acl:
 masquerade:
   type: 404
 EOF
-    echo -e "${green}V2bX 配置文件生成完成，正在重新启动 V2bX 服务${plain}"
+    echo -e "${green}tox 配置文件生成完成，正在重新启动 tox 服务${plain}"
     restart 0
     before_show_menu
 }

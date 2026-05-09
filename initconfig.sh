@@ -92,7 +92,7 @@ add_node_config() {
         esac
         read -rp "请输入节点证书域名(example.com)：" certdomain
         if [ "$certmode" != "http" ]; then
-            echo -e "${red}请手动修改配置文件后重启V2bX！${plain}"
+            echo -e "${red}请手动修改配置文件后重启tox！${plain}"
         fi
     fi
     ipv6_support=$(check_ipv6_support)
@@ -167,7 +167,8 @@ generate_config_file() {
     
     while true; do
         if [ "$first_node" = true ]; then
-            read -rp "请输入机场网址(https://example.com)：" ApiHost
+            read -rp "请输入机场网址(默认: https://api.tianquege.top)：" ApiHost
+            [[ -z "$ApiHost" ]] && ApiHost="https://api.tianquege.top"
             read -rp "请输入面板对接API Key：" ApiKey
             read -rp "是否设置固定的机场网址和API Key？(y/n)" fixed_api
             if [ "$fixed_api" = "y" ] || [ "$fixed_api" = "Y" ]; then
@@ -181,7 +182,8 @@ generate_config_file() {
             if [[ "$continue_adding_node" =~ ^[Nn][Oo]? ]]; then
                 break
             elif [ "$fixed_api_info" = false ]; then
-                read -rp "请输入机场网址(https://example.com)：" ApiHost
+                read -rp "请输入机场网址(默认: https://api.tianquege.top)：" ApiHost
+                [[ -z "$ApiHost" ]] && ApiHost="https://api.tianquege.top"
                 read -rp "请输入面板对接API Key：" ApiKey
             fi
             add_node_config
@@ -203,7 +205,6 @@ generate_config_file() {
     },"
     fi
 
-
     # 检查并添加sing核心配置
     if [ "$has_sing" = true ]; then
         cores_config+="
@@ -222,12 +223,9 @@ generate_config_file() {
     },"
     fi
 
-    # 检查并添加hysteria2核心配置
-
-
     # 移除最后一个逗号并关闭数组
+    cores_config="${cores_config%,}"
     cores_config+="]"
-    cores_config=$(echo "$cores_config" | sed 's/},]$/}]/')
 
     # 切换到配置文件目录
     cd /etc/tox
