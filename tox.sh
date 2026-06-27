@@ -458,6 +458,7 @@ add_node_config() {
         echo -e "${green}6. Trojan${plain}"  
         echo -e "${green}7. Tuic${plain}"
         echo -e "${green}8. AnyTLS${plain}"
+        echo -e "${green}9. Mieru${plain}"
         read -rp "请输入：" NodeType
         case "$NodeType" in
             1 ) NodeType="shadowsocks" ;;
@@ -468,6 +469,7 @@ add_node_config() {
             6 ) NodeType="trojan" ;;
             7 ) NodeType="tuic" ;;
             8 ) NodeType="anytls" ;;
+            9 ) NodeType="mieru" ;;
             * ) NodeType="shadowsocks" ;;
         esac
     fi
@@ -475,6 +477,11 @@ add_node_config() {
     if [ "$NodeType" == "anytls" ]; then
         core="sing"
         has_sing=true
+    fi
+    # 强制 Mieru 使用 Mieru 核心
+    if [ "$NodeType" == "mieru" ]; then
+        core="mieru"
+        has_mieru=true
     fi
     fastopen=true
     if [ "$NodeType" == "vless" ]; then
@@ -573,6 +580,7 @@ generate_config_file() {
     first_node=true
     has_xray=false
     has_sing=false
+    has_mieru=false
     fixed_api_info=false
     check_api=false
     
@@ -631,6 +639,14 @@ generate_config_file() {
             \"ServerPort\": 0
         },
         \"OriginalPath\": \"/etc/tox/sing_origin.json\"
+    },"
+    fi
+
+    # 检查并添加mieru核心配置
+    if [ "$has_mieru" = true ]; then
+        cores_config+="
+    {
+        \"Type\": \"mieru\"
     },"
     fi
 
